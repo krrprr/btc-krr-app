@@ -1,4 +1,6 @@
 {
+  "include": [ "src" ],
+  "exclude": [ "**/*.spec.ts" ],
   "compilerOptions": {
     "module": "commonjs",
     "esModuleInterop": true,

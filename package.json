@@ -4,15 +4,33 @@
   "description": "",
   "main": "dist/app.js",
   "scripts": {
-    "start": "tsc && node dist/app.js",
-    "lint": "eslint . --ext js,ts"
+    "start": "npm run compile && node dist/app.js",
+    "dev": "npm run compile && concurrently --kill-others \"npm run compile:watch\" \"npm run nodemon:watch\"",
+    "compile": "npm run lint && tsc",
+    "compile:watch": "tsc -w",
+    "nodemon:watch": "nodemon --watch dist -e js dist/app.js",
+    "lint": "eslint --ext .js,.ts src/",
+    "prettier": "prettier --write src/",
+    "prettier:check": "prettier --check src/",
+    "test": "npm run prettier:check && npm run compile && jest --forceExit",
+    "test:watch": "npm run compile && jest --watch"
   },
   "author": "krr prr",
   "license": "ISC",
   "devDependencies": {
+    "@types/jest": "^26.0.0",
     "@typescript-eslint/eslint-plugin": "^3.2.0",
     "@typescript-eslint/parser": "^3.2.0",
     "eslint": "^7.2.0",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-plugin-prettier": "^3.1.3",
+    "jest": "^26.0.1",
+    "nodemon": "^2.0.4",
+    "prettier": "2.0.5",
+    "ts-jest": "^26.1.0",
     "typescript": "^3.9.5"
+  },
+  "dependencies": {
+    "concurrently": "^5.2.0"
   }
 }
