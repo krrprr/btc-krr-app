@@ -6,9 +6,17 @@ const getBlockCount$ = (): Observable<number> => {
   return createPostRequest$('getblockcount');
 };
 
+const getBlockHash$ = (blockHeight: number): Observable<string> => {
+  return createPostRequest$('getblockhash', [blockHeight]);
+};
+
+const getBlock$ = (blockHash: string): Observable<any> => {
+  return createPostRequest$('getblock', [blockHash]);
+};
+
 function createPostRequest$<T>(
   methodName: string,
-  params: [] = []
+  params: any[] = []
 ): Observable<T> {
   const USER: string | undefined = process.env?.BITCOIND_RPC_USER;
   const PASSWORD: string | undefined = process.env?.BITCOIND_RPC_PASSWORD;
@@ -25,4 +33,4 @@ function createPostRequest$<T>(
   ).pipe(pluck('data', 'result'));
 }
 
-export { getBlockCount$ };
+export { getBlockCount$, getBlockHash$, getBlock$ };

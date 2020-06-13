@@ -1,20 +1,32 @@
 import { AxiosError } from 'axios';
 import express, { Request, Response } from 'express';
-import { getBlockCount$ } from './rpc';
+import { PartialObserver } from 'rxjs';
+import { mergeMap } from 'rxjs/operators';
+import { getBlock$, getBlockCount$, getBlockHash$ } from './rpc';
 
 const router: express.Router = express.Router();
 
 router.get('/getblockcount', (_request: Request, response: Response) => {
-  getBlockCount$().subscribe({
-    next: (value: number) => {
+  getBlockCount$().subscribe(handleResponse(response));
+});
+
+router.get('/getlastblock', (_request: Request, response: Response) => {
+  const lastBlock$ = getBlockCount$().pipe(
+    mergeMap((count: number) => getBlockHash$(count)),
+    mergeMap((hash: string) => getBlock$(hash))
+  );
+  lastBlock$.subscribe(handleResponse(response));
+});
+
+function handleResponse<T>(response: Response): PartialObserver<T> {
+  return {
+    next: (value: T): void => {
       response.send({ value });
     },
-    error: (error: AxiosError) => {
-      response.status(500).send({
-        message: error.message,
-      });
+    error: (error: AxiosError): void => {
+      response.status(500).send({ message: error.message });
     },
-  });
-});
+  };
+}
 
 export { router };
