@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { from, Observable } from 'rxjs';
 import { pluck } from 'rxjs/operators';
+import { Block } from './types/block';
 
 const getBlockCount$ = (): Observable<number> => {
   return createPostRequest$('getblockcount');
@@ -10,7 +11,7 @@ const getBlockHash$ = (blockHeight: number): Observable<string> => {
   return createPostRequest$('getblockhash', [blockHeight]);
 };
 
-const getBlock$ = (blockHash: string): Observable<any> => {
+const getBlock$ = (blockHash: string): Observable<Block> => {
   return createPostRequest$('getblock', [blockHash]);
 };
 
