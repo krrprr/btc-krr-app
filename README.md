@@ -5,18 +5,18 @@
 
 ## Running the application
 ### Prerequisites
-* Node >= v10.16
+* Node >= v12.18.1
 * Bitcoin Core Daemon (bitcoind)
 
 ### Setup
 * Run `npm install` in the project folder
-* Make a copy of the `.env.sample` file and rename it as `.env`
+* Make a copy of the `.env.example` file and rename it as `.env`
 * Edit the `.env` file:
     * The application listens to incoming requests described in `./src/api.ts` on a port that is assigned to the `PORT` variable.
     * `BITCOIND_RPC_HOST` and `BITCOIND_RPC_PORT` refer to the address and port, respectively, of the Bitcoin node.
-    * `BITCOIND_RPC_USER` and `BITCOIND_RPC_PASSWORD` are related to the value of `rpcauth` in the node's `bitcoin.conf` file.   
+    * `BITCOIND_RPC_USER` and `BITCOIND_RPC_PASSWORD` are related to the value of `rpcauth` in the node's `bitcoin.conf` file.
       For generating authentication credentials, see https://github.com/bitcoin/bitcoin/tree/master/share/rpcauth.
-      
+
 ### Start
 * `npm run start` or
 * `npm run dev` in development mode

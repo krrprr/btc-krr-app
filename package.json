@@ -1,7 +1,7 @@
 {
   "name": "btc-krr-app",
   "version": "1.0.0",
-  "description": "",
+  "description": "An API for custom combined requests to Bitcoin RPC",
   "main": "dist/app.js",
   "scripts": {
     "start": "npm run compile && node dist/app.js",
@@ -40,5 +40,8 @@
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "rxjs": "^6.5.5"
+  },
+  "engines": {
+    "node": ">=12.18.1"
   }
 }
