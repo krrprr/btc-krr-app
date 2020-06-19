@@ -19,10 +19,10 @@ function createPostRequest$<T>(
   methodName: string,
   params: any[] = []
 ): Observable<T> {
-  const USER: string | undefined = process.env?.BITCOIND_RPC_USER;
-  const PASSWORD: string | undefined = process.env?.BITCOIND_RPC_PASSWORD;
-  const PORT: string | undefined = process.env?.BITCOIND_RPC_PORT;
-  const HOST: string | undefined = process.env?.BITCOIND_RPC_HOST;
+  const USER: string = process.env.BITCOIND_RPC_USER!;
+  const PASSWORD: string = process.env.BITCOIND_RPC_PASSWORD!;
+  const PORT: string = process.env.BITCOIND_RPC_PORT!;
+  const HOST: string = process.env.BITCOIND_RPC_HOST!;
 
   return from(
     axios.post(`http://${USER}:${PASSWORD}@${HOST}:${PORT}/`, {
