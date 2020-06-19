@@ -12,21 +12,71 @@ beforeEach(() => {
 });
 
 describe('getLastBlock$', () => {
-  it('maps to the block$ value after completing all observables', () => {
+  type TestInput = {
+    blockCountMarbles: string;
+    blockHashMarbles: string;
+    blockMarbles: string;
+    blockValue?: { [key: string]: Block };
+    expectedMarbles: string;
+    expectedValues?: { [key: string]: Block };
+  };
+
+  const runTest = (input: TestInput): void => {
     testScheduler.run((helpers) => {
       const { cold, expectObservable } = helpers;
 
-      const block = { hash: '123abc', height: 555, confirmations: 1 } as Block;
-
       const blockCount$ = (): Observable<number> =>
-        cold('200ms (a |)', { a: 555 });
-      const blockHash$ = (): Observable<string> =>
-        cold('100ms (b |)', { b: '123abc' });
-      const block$ = (): Observable<Block> => cold('300ms (c |)', { c: block });
+        cold(input.blockCountMarbles);
+      const blockHash$ = (): Observable<string> => cold(input.blockHashMarbles);
+      const block$ = (): Observable<Block> =>
+        input.blockValue
+          ? cold(input.blockMarbles, input.blockValue)
+          : cold(input.blockMarbles);
 
       const result$ = getLastBlock$(blockCount$, blockHash$, block$);
-      const expected = '600ms (c |)';
-      expectObservable(result$).toBe(expected, { c: block });
+      expectObservable(result$).toBe(
+        input.expectedMarbles,
+        input.expectedValues
+      );
+    });
+  };
+
+  it('maps to the block$ value after completing all observables', () => {
+    const block = { hash: '123abc', height: 555, confirmations: 1 } as Block;
+    runTest({
+      blockCountMarbles: '200ms (a|)',
+      blockHashMarbles: '100ms (b|)',
+      blockMarbles: '300ms (c|)',
+      blockValue: { c: block },
+      expectedMarbles: '600ms (c|)',
+      expectedValues: { c: block },
+    });
+  });
+
+  it('errors in case of blockCount$ error', () => {
+    runTest({
+      blockCountMarbles: '200ms #',
+      blockHashMarbles: '100ms (b|)',
+      blockMarbles: '300ms (c|)',
+      expectedMarbles: '200ms #',
+    });
+  });
+
+  it('errors in case of blockHash$ error', () => {
+    runTest({
+      blockCountMarbles: '200ms (a|)',
+      blockHashMarbles: '100ms #',
+      blockMarbles: '300ms (c|)',
+      expectedMarbles: '300ms #',
+    });
+  });
+
+  it('errors in case of block$ error', () => {
+    runTest({
+      blockCountMarbles: '200ms (a|)',
+      blockHashMarbles: '100ms (b|)',
+      blockMarbles: '300ms #',
+      expectedMarbles: '600ms #',
     });
   });
 });
